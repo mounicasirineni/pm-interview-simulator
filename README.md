@@ -102,7 +102,7 @@ process.
 
 ## Roadmap
 
-- [ ] Research library integration — context-aware interviews grounded in your 
+- [ ] Research library integration — context-aware interviews grounded in my 
       own company deep dives (pairs with PM Research Toolkit)
 - [ ] Score trend dashboard improvements
 - [ ] Mobile optimization
