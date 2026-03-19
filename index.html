@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow">
+    <title>PM Interview Simulator</title>
+    <link rel="stylesheet" href="/style.css" />
+    <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+  <body>
+    <div id="app">
+      <nav class="nav-bar">
+        <button class="nav-tab active" data-tab="practice">Practice</button>
+        <button class="nav-tab" data-tab="progress">Progress</button>
+      </nav>
+
+      <div id="practice-view" class="view">
+        <header class="header">
+          <h1>PM Interview Simulator</h1>
+          <p class="subtitle">Practice your product management interview skills</p>
+        </header>
+
+        <main class="main-content">
+          <section id="setup-screen" class="screen">
+            <div class="card">
+              <h2>Select Question Type</h2>
+              <div class="question-types">
+                <button class="type-btn" data-type="product_sense">Product Sense</button>
+                <button class="type-btn" data-type="strategy">Strategy</button>
+                <button class="type-btn" data-type="analytical">Analytical</button>
+                <button class="type-btn" data-type="execution">Execution</button>
+                <button class="type-btn" data-type="technical_depth">Technical Depth</button>
+                <button class="type-btn" data-type="behavioral">Behavioral</button>
+                <button class="type-btn" data-type="estimation">Estimation</button>
+              </div>
+<button id="start-session" class="primary-btn" disabled>Start Session</button>
+            </div>
+          </section>
+
+          <section id="interview-screen" class="screen hidden">
+            <div class="session-header">
+              <button id="back-to-setup" class="back-btn">Back</button>
+              <button id="evaluate-session" class="evaluate-btn">Evaluate Session</button>
+            </div>
+            <div class="card">
+              <div id="initial-question-container" class="initial-question-container hidden">
+                <div class="question-label">Interview Question</div>
+                <p id="initial-question-text" class="question-text"></p>
+              </div>
+
+              <div id="conversation-thread" class="conversation-thread"></div>
+
+              <div id="generating-container" class="hidden">
+                <div class="loader"></div>
+                <p id="generating-text" class="loading-text">Generating question...</p>
+              </div>
+
+              <div id="loading-container" class="hidden">
+                <div class="loader"></div>
+                <p class="loading-text">Evaluating your session...</p>
+              </div>
+
+              <div id="evaluation-container" class="hidden">
+                <h3 class="evaluation-title">Session Evaluation</h3>
+                <div class="overall-score">
+                  <span class="overall-label">Overall Score</span>
+                  <span id="score-overall" class="overall-value">-</span>
+                </div>
+                <div class="scores-grid">
+                  <div class="score-item">
+                    <span class="score-label">Structure</span>
+                    <span id="score-structure" class="score-value">-</span>
+                  </div>
+                  <div class="score-item">
+                    <span class="score-label">Specificity</span>
+                    <span id="score-specificity" class="score-value">-</span>
+                  </div>
+                  <div class="score-item">
+                    <span class="score-label">Opinion Clarity</span>
+                    <span id="score-opinion" class="score-value">-</span>
+                  </div>
+                  <div class="score-item">
+                    <span class="score-label">Depth Under Pressure</span>
+                    <span id="score-depth" class="score-value">-</span>
+                  </div>
+                </div>
+                <div class="debrief-container">
+                  <h4>Debrief</h4>
+                  <p id="debrief-text" class="debrief-text"></p>
+                </div>
+                <div class="model-answer-section">
+                  <button id="model-answer-btn" class="secondary-btn">See Model Answer</button>
+                  <div id="model-answer-container" class="hidden">
+                  <h4>Model Answer</h4>
+                  <div id="model-answer-text" class="debrief-text"></div>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <button id="new-session" class="primary-btn">New Session</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <div id="input-container" class="input-container hidden">
+        <textarea id="message-input" class="message-input" placeholder="Type your response..." rows="4"></textarea>
+        <div class="input-actions">
+          <span id="recording-indicator" style="display:none; color: red;">Recording...</span>
+          <button id="mic-btn" class="mic-btn" title="Voice input">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+          </button>
+          <button id="send-message" class="send-btn">Send</button>
+        </div>
+      </div>
+
+      <div id="progress-view" class="view hidden">
+        <header class="header">
+          <h1>Progress Dashboard</h1>
+          <p class="subtitle">Track your interview performance over time</p>
+        </header>
+
+        <main class="main-content dashboard-content">
+          <div id="dashboard-loading" class="dashboard-loading">
+            <div class="loader"></div>
+            <p class="loading-text">Loading your progress...</p>
+          </div>
+
+          <div id="dashboard-empty" class="dashboard-empty hidden">
+            <p>No sessions yet. Start practicing to see your progress!</p>
+            <button id="start-practicing" class="primary-btn">Start Practicing</button>
+          </div>
+
+          <div id="dashboard-charts" class="dashboard-charts hidden">
+            <div class="dashboard-grid">
+              <div class="chart-card score-trend-card">
+                <h3>Overall Score Trend</h3>
+                <div id="score-trend-chart" class="chart-container"></div>
+              </div>
+
+              <div class="chart-card radar-card">
+                <h3>Dimension Profile</h3>
+                <div id="radar-chart" class="chart-container"></div>
+              </div>
+
+              <div class="chart-card heatmap-card">
+                <h3>Question Type Practice</h3>
+                <div id="heatmap" class="heatmap-container"></div>
+              </div>
+
+              <div class="chart-card session-log-card">
+                <h3>Session History</h3>
+                <div id="session-log" class="session-log"></div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+<script type="module" src="/main.js"></script>
+  </body>
+</html>
