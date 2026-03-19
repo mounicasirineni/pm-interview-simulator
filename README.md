@@ -1,6 +1,7 @@
 # PM Interview Simulator
 
 > A conversational AI-powered interview simulator built for serious PM interview prep.
+> **[Try it live →](https://pm-interview-simulat-xs5s.bolt.host)**
 
 ## What This Is
 
