@@ -30,7 +30,7 @@ your performance across four dimensions that actually matter in PM interviews.
 User selects question category
         ↓
 Generator Agent
-Picks from 70 seeded real PM questions or generates a new one
+Picks from 140 seeded real PM questions or generates a new one
 using few-shot examples (70% generate, 30% pull directly)
         ↓
 Interviewer Agent
@@ -53,7 +53,7 @@ Progress tracked over time
 **Generator Agent** — Question quality was the first thing I hardened. The prompt 
 includes explicit category definitions and hard boundaries to prevent drift 
 (e.g. Product Sense questions drifting into Analytical territory). A seeded bank 
-of 70 real PM interview questions sourced from Exponent provides few-shot grounding 
+of 140 real PM interview questions sourced from Exponent provides few-shot grounding 
 — 70% of sessions generate a new question using examples, 30% pull directly from 
 the bank.
 
@@ -94,9 +94,10 @@ process.
   of a conversation
 - Calibration requires rubrics — open-ended scoring instructions produce inconsistent 
   scores; explicit score ranges for each dimension fixed this
-- Few-shot examples improve question realism significantly — seeding with real 
-  questions from Exponent grounded generation in patterns that actually appear 
-  in PM interviews
+- Few-shot examples improve question realism significantly — seeding with
+  140 real questions from Exponent grounded generation in patterns that 
+  actually appear in PM interviews. Duplicate prevention tracks recent 
+  questions to avoid repeating similar scenarios across sessions.
 - Bolt's GitHub sync is unreliable — manual terminal pushes are more dependable 
   for maintaining a clean repo
 
