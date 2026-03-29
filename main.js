@@ -6,7 +6,7 @@ import {
 import { fetchQuestionExamples } from './researchService.js';
 import { setupNavigation, loadDashboard } from './dashboard.js';
 import { toggleRecording } from './voiceService.js';
-import { generateQuestion, getInterviewerResponse, evaluateInterview, generateModelAnswer } from './api.js';
+import { generateQuestion, getInterviewerResponse, evaluateInterview, generateCoachFeedback } from './api.js';
 
 const state = {
   selectedType: null,
@@ -15,7 +15,8 @@ const state = {
   conversationHistory: [],
   isWaitingForResponse: false,
   isEvaluated: false,
-  scores: null
+  scores: null,
+  recentQuestions: []
 };
 
 const elements = {
@@ -54,21 +55,36 @@ function init() {
   elements.startButton.addEventListener('click', () => {
     startSession(state.selectedType);
   });
-  elements.sendButton.addEventListener('click', sendMessage);
+
+  // FIX 1: Wrap sendMessage in arrow function so the click event object
+  // is not passed as the `transcript` argument, which caused [object PointerEvent]
+  // to be submitted as the candidate's message instead of the textarea value.
+  elements.sendButton.addEventListener('click', () => sendMessage());
+
   elements.evaluateButton.addEventListener('click', evaluateSession);
   elements.newSessionButton.addEventListener('click', resetToSetup);
   elements.backButton.addEventListener('click', resetToSetup);
   elements.modelAnswerBtn.addEventListener('click', async () => {
-  elements.modelAnswerBtn.disabled = true;
-  elements.modelAnswerBtn.textContent = 'Generating...';
-  const answer = await generateModelAnswer(state.initialQuestion);
-  elements.modelAnswerText.innerHTML = answer
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\n/g, '<br>');
-  elements.modelAnswerContainer.classList.remove('hidden');
-  elements.modelAnswerBtn.textContent = 'See Model Answer';
-  elements.modelAnswerBtn.disabled = false;
-});
+    elements.modelAnswerBtn.disabled = true;
+    elements.modelAnswerBtn.textContent = 'Loading...';
+
+    // Coach runs sequentially after Evaluator — receives scores and debrief
+    // so feedback is anchored to identified weaknesses, not a generic pass
+    // over the transcript. Also receives questionType for category-specific guidance.
+    const coaching = await generateCoachFeedback(
+      state.initialQuestion,
+      state.conversationHistory,
+      state.scores,
+      state.selectedType
+    );
+
+    elements.modelAnswerText.innerHTML = coaching
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+    elements.modelAnswerContainer.classList.remove('hidden');
+    elements.modelAnswerBtn.textContent = 'Get Coaching';
+    elements.modelAnswerBtn.disabled = false;
+  });
 
   elements.messageInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -174,7 +190,8 @@ async function startSession(type) {
 
   try {
     const examples = await fetchQuestionExamples(type);
-    state.initialQuestion = await generateQuestion(type, examples);
+    state.initialQuestion = await generateQuestion(type, examples, state.recentQuestions);
+    state.recentQuestions = [...state.recentQuestions.slice(-4), state.initialQuestion];
     console.log('Generated question:', state.initialQuestion);
     state.sessionId = await createSession(type, state.initialQuestion);
 
@@ -184,7 +201,6 @@ async function startSession(type) {
     elements.generatingContainer.classList.add('hidden');
     elements.initialQuestionContainer.classList.remove('hidden');
     elements.inputContainer.classList.remove('hidden');
-    elements.evaluateButton.disabled = false;
     elements.messageInput.value = '';
     elements.messageInput.focus();
   } catch (error) {
@@ -230,12 +246,19 @@ async function sendMessage(transcript = null) {
       console.error('Error saving conversation:', error);
     }
 
+    const exchangeCount = state.conversationHistory.filter(e => e.role === 'candidate').length;
+
     if (response.includes("Thank you, that's all I have for you today")) {
       state.isWaitingForResponse = false;
       elements.sendButton.disabled = false;
       elements.messageInput.disabled = false;
+      elements.evaluateButton.disabled = false;
       await evaluateSession();
       return;
+    }
+
+    if (exchangeCount >= 12) {
+      elements.evaluateButton.disabled = false;
     }
   } catch (error) {
     console.error('Error getting interviewer response:', error);
@@ -262,7 +285,7 @@ async function evaluateSession() {
   elements.loadingContainer.classList.remove('hidden');
 
   try {
-    state.scores = await evaluateInterview(state.initialQuestion, state.conversationHistory);
+    state.scores = await evaluateInterview(state.initialQuestion, state.conversationHistory, state.selectedType);
 
     await saveEvaluation(state.sessionId, state.selectedType, state.scores, state.conversationHistory);
 
@@ -294,7 +317,6 @@ async function evaluateSession() {
       state.isEvaluated = false;
       elements.messageInput.disabled = false;
       elements.sendButton.disabled = false;
-      elements.evaluateButton.disabled = false;
     }
   }
 }
