@@ -65,7 +65,7 @@ Coach (on demand) api.js → generateCoachFeedback
 - Sarvam AI Saaras v3 for speech-to-text
 
 ## Live demo
-**[pm-interview-simulator →](#)** *(https://pm-interview-simulat-xs5s.bolt.host)*
+**[pm-interview-simulator →](https://pm-interview-simulat-xs5s.bolt.host)**
 
 ## What I learned / what I'd do differently
 **Prompt boundaries beat prompt length.** The Generator only stopped drifting between categories when I added explicit "do not generate questions containing words like *declined, dropped, investigate*" — positive examples weren't enough. Negative rules carry more signal than longer descriptions of what good looks like.
