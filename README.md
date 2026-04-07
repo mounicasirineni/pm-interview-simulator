@@ -1,162 +1,68 @@
 # PM Interview Simulator
-
-> A conversational AI-powered interview simulator built for serious PM interview prep.
-> **[Try it live →](https://pm-interview-simulat-xs5s.bolt.host)**
-
-## What This Is
-
-I built this to practice PM interviews the way they actually feel — not flashcards, 
-not static question lists, but a live back-and-forth with an interviewer who pushes 
-back, probes weaknesses, and doesn't let you off the hook with vague answers.
-
-The simulator generates a question, conducts a realistic interview, evaluates your 
-performance against a calibrated rubric, and coaches you on exactly where you fell 
-short — anchored to what actually happened in your session, not a generic model answer.
-
-## What It Does
-
-- Generates challenging PM interview questions across 7 categories: Product Sense, 
-  Strategy, Analytical, Execution, Technical Depth, Estimation, and Behavioral
-- Conducts a realistic conversational interview — gives you space to frame the 
-  problem early, then stress-tests your reasoning and pushes for commitment
-- Wraps up naturally when the interviewer has enough signal, like a real interview
-- Evaluates performance on Structure, Specificity, Opinion Clarity, and Depth 
-  Under Pressure with a category-aware rubric and specific debrief
-- Provides post-session coaching anchored to your actual gaps — not a generic 
-  ideal answer, but targeted feedback on what you missed and what stronger looks like
-- Supports voice input via Sarvam AI speech-to-text
-- Tracks session history and score trends over time across all question categories
-
-## How It Works
-
+> A conversational interview simulator that runs a real PM interview loop — generate, probe, evaluate, coach — against a category-aware rubric.
+Show less
+> **[Live demo →](#)** *(replace with deployed URL)*
+## What it is
+A four-agent system that runs the full arc of a PM interview: it picks a question in one of seven categories, conducts a multi-turn back-and-forth that pushes back on weak answers, evaluates the transcript against a rubric calibrated to that specific category, and then coaches you on the gaps the evaluator actually found. Built as a single-page vanilla JS app with Supabase for persistence and a Supabase edge function as the only component holding the Anthropic API key. Every behavior in this README is grounded in a specific file in the repo — I built and tuned all four agent prompts, the evaluation rubric, and the persistence and dashboard layers myself.
+## Why I built it
+I was prepping for PM interviews and the existing tools all failed in the same way: static question banks, generic "model answers," and no pressure. Real PM interviews are won or lost in the follow-up — when the interviewer pushes on your prioritization, asks for a number, or refuses to accept "it depends." None of that exists in flashcards. I wanted something that actually felt adversarial, that wrapped up like a real interview when the interviewer had enough signal, and that gave me feedback specific to what I said, not a polished essay generated independently of my answer.
+## How it works
+The system is four agents, each a single-purpose prompt, chained through one thin client wrapper.
 ```
-User selects question category
+User picks category
         ↓
-Generator Agent
-Picks from 140 seeded real PM questions or generates a new one
-using few-shot examples (70% generate, 30% pull directly)
+Generator        api.js → generateQuestion
+  70% generates a new question with few-shot grounding from a 140-question
+  Exponent bank; 30% serves a real seeded question directly. Tracks recent
+  questions to avoid repeats. Hard category boundaries in the prompt
+  prevent drift (e.g. Product Sense leaking into Analytical).
         ↓
-Interviewer Agent
-Conducts live back-and-forth with category-aware probing
-Enforces exchange limit and topic budget
-Ends naturally when sufficient signal is gathered
+Interviewer      api.js → getInterviewerResponse
+  Runs the live conversation. Prompt enforces a warm-up phase before
+  pressure, one question per turn, a 3-exchange budget per concept (not
+  per angle), required Product Sense phase coverage, and a hard 12-turn
+  ceiling. Wraps up with an exact sentence the client detects.
         ↓
-Evaluator Agent
-Scores full transcript against category-specific rubric
-Applies category-aware dimension weighting to overall score
-Returns dimension scores + specific debrief
+Evaluator        api.js → evaluateInterview
+  Scores the full transcript on Structure, Specificity, Opinion Clarity,
+  and Depth Under Pressure. Uses a category-specific Structure rubric and
+  category-specific dimension weighting for the overall score, with
+  explicit failure conditions that can override the weighted average.
         ↓
-Coach Agent (on demand, runs after Evaluator)
-Receives evaluator scores and debrief as input
-Produces two sections: where you fell short + what strong looks like
-Coaching is anchored to your actual gaps, not a generic ideal answer
-        ↓
-Session saved to database
-Progress tracked over time
+Coach (on demand) api.js → generateCoachFeedback
+  Runs sequentially after the Evaluator and consumes its scores and
+  debrief. Leads with the highest-priority dimension for the category,
+  not the lowest score. Forbidden from restating the candidate's answers.
 ```
-
-## Agent Design
-
-**Generator Agent** — Question quality was the first thing I hardened. The prompt 
-includes explicit category definitions and hard boundaries to prevent drift 
-(e.g. Product Sense questions drifting into Analytical territory). A seeded bank 
-of 140 real PM interview questions sourced from Exponent provides few-shot grounding 
-— 70% of sessions generate a new question using examples, 30% pull directly from 
-the bank. Recent questions are tracked to avoid repeating similar scenarios across 
-sessions.
-
-**Interviewer Agent** — The hardest agent to get right. Early versions pushed for 
-final recommendations in the first response, stacked multiple questions per turn, 
-and drilled the same topic indefinitely. The current prompt enforces:
-- Interview pacing — warm-up phase before stress-testing, no commitment demands early
-- One question per turn — never stacking multiple probes
-- Topic budget by concept — 3-exchange limit per underlying concept, not per angle, 
-  so the same idea probed from different directions still counts against the budget
-- Hard exchange limit — wraps up within 12 candidate turns regardless of remaining 
-  signal gaps
-- Candidate-stated priorities — never silently ignores priorities the candidate 
-  names; either probes within them or explicitly challenges them
-- Content approval prohibition — never signals whether an answer was good or bad 
-  before probing; acknowledges a resolved challenge only after the candidate has 
-  directly addressed it
-- Category-aware probing — different dimensions probed by question type (e.g. 
-  Product Sense probes user segmentation and feature design specifics; Behavioral 
-  probes personal contribution vs. team contribution)
-- Required phase coverage for Product Sense — must reach feature design before 
-  wrapping, not just metrics
-
-**Evaluator Agent** — Scores against an explicit rubric with defined ranges for 
-each dimension. Without a rubric, scores were uncalibrated — a 7 in one session 
-meant something different than a 7 in another. Key design decisions:
-- Category-specific Structure rubric — what "organized" means differs by question 
-  type. A Product Sense answer moving problem context → segmentation → pain points 
-  is following the correct framework, not failing structure. Generic rubrics 
-  penalized correct sequencing.
-- Category-aware dimension weighting — the overall score weights dimensions 
-  differently by category. Opinion Clarity matters most in Product Sense; 
-  Specificity matters most in Analytical and Estimation; Depth Under Pressure 
-  matters most in Execution. Each category also has an explicit failure condition 
-  that can override the weighted average.
-- Reasoning arc evaluation — scores where the candidate landed, not just early 
-  exchanges. Distinguishes premise-questioning (legitimate) from refusal to engage 
-  (failure).
-- Debrief consistency check — debrief must reconcile with numerical scores before 
-  output; can't describe something as a strength and give it a low score.
-
-**Coach Agent** — Runs sequentially after the Evaluator, receiving scores and 
-debrief as input. This sequential architecture is intentional: coaching anchored 
-to evaluation findings is more useful than a generic model answer generated 
-independently from the same transcript. Key design decisions:
-- Leads with the highest-priority dimension for the category — for Product Sense, 
-  Opinion Clarity gaps are surfaced first regardless of which dimension scored 
-  lowest numerically
-- Two-section output: "Where you fell short" names the specific moment in the 
-  conversation where the gap showed up; "What strong looks like" demonstrates 
-  stronger answers on those exact dimensions, including angles the candidate 
-  didn't take
-- Explicitly prohibited from restating the candidate's positions with thresholds 
-  added — coaching must surface something the candidate didn't already say
-- Category-specific guidance on what a 10/10 answer looks like for each of the 
-  7 question types
-
-## Tech Stack
-
-- Frontend: Vanilla JS, HTML, CSS
-- Backend: Supabase edge functions
-- Database: Supabase
-- AI: Claude Sonnet (Anthropic) via API
-- Voice: Sarvam AI speech-to-text (Saaras v3)
-
-## What I Learned Building This
-
-- Prompt boundaries matter more than prompt length — adding explicit "never do X" 
-  rules to the Generator eliminated category drift that vague positive instructions 
-  couldn't fix
-- Interviewer pacing is a product problem, not just a prompt problem — the interview 
-  felt adversarial until I modeled how a real interviewer behaves across the arc 
-  of a conversation
-- Topic budgets need to track concepts, not angles — limiting exchanges per topic 
-  didn't work until the prompt explicitly said "the same idea probed from different 
-  directions still counts against the budget"
-- Category-aware rubrics matter — a generic structure rubric penalized correct 
-  Product Sense sequencing as a structural failure; the fix required defining what 
-  "organized" means separately for each question type
-- Evaluator and Coach should be sequential, not parallel — the Coach receiving 
-  evaluator scores and debrief as input produces coaching anchored to actual gaps 
-  rather than a generic ideal answer restated with better vocabulary
-- Calibration requires rubrics with failure conditions — explicit score ranges fix 
-  score variance, but category-level failure conditions (e.g. "no clear position 
-  in Product Sense fails regardless of structure score") are needed to prevent 
-  the weighted average from masking a fundamental miss
-- Few-shot examples improve question realism significantly — seeding with 140 real 
-  questions from Exponent grounded generation in patterns that actually appear in 
-  PM interviews
-
+**Front of house.** `index.html` is a two-view SPA (Practice / Progress). `main.js` owns session state and the interview loop — it persists the running transcript on every turn via `supabase.js` `updateConversationHistory`, watches the interviewer's reply for the literal wrap-up sentence, and auto-triggers evaluation when it sees it. `voiceService.js` adds optional mic capture through Sarvam speech-to-text so users can practice out loud.
+**Model calls.** `api.js` `callClaude` is the one wrapper every agent goes through. It posts to `supabase/functions/pm-interview/index.ts`, the Supabase edge function that holds the Anthropic key — the key never touches the browser.
+**Persistence.** `supabase.js` writes to two tables: `sessions` (mutable conversation state + final overall score) and `scores` (immutable evaluation artifact), joined on session_id. A `progress` table maintains a running per-category average that's updated incrementally instead of recomputed from history. A separate `question_examples` table holds the 140 seeded questions the Generator pulls few-shot examples from via `researchService.js`.
+**Progress dashboard.** `dashboard.js` mounts four Recharts widgets — score trend line, dimension radar, category heatmap, and an expandable session log with every past debrief — into the vanilla JS shell using cached React roots.
+## What's technically interesting
+**Category-aware evaluation, not a flat rubric.** Early versions used one Structure rubric across all categories and a fixed dimension weighting for the overall score. This produced nonsense — a Product Sense candidate following the correct framework (problem context → segmentation → pain points → feature → metrics) was scored as "jumping around." Fixed in `api.js` `evaluateInterview`: there's a separate Structure rubric per category, dimension weighting flips per category (Opinion Clarity dominates Product Sense, Specificity dominates Analytical and Estimation, Depth Under Pressure dominates Execution), and each category has an explicit failure condition that overrides the weighted average so a candidate can't get a 7 while completely missing the point of the question.
+**Topic budget tracks concepts, not angles.** The Interviewer agent originally drilled the same idea forever by re-wording the question. Adding "max 3 exchanges per topic" didn't fix it because the model treated each rewording as a new topic. The current prompt in `getInterviewerResponse` says explicitly: track sub-topics by underlying concept, and the same idea probed from different directions still counts against the budget. A hard 12-turn ceiling sits underneath as a safety net so pacing failures can't run away.
+**Coach is sequential to the Evaluator, not parallel.** The Coach receives the Evaluator's scores and debrief as input rather than re-reading the transcript independently. This was a deliberate choice — running them in parallel produced two disconnected analyses that often disagreed. Sequential composition means coaching is anchored to the same gaps the score reflects. The Coach prompt is also explicitly forbidden from restating the candidate's own answers with better vocabulary, which is the failure mode generic "model answer" features fall into.
+**Defensive JSON parsing with raw fallback.** `api.js` `cleanJsonResponse` strips markdown fencing and slices to the outermost braces before `JSON.parse`, because Claude wraps JSON in fences often enough to matter. When parsing still fails, `main.js` surfaces the raw model output to the user instead of a generic error — debugging a black box is worse than seeing the actual failure.
+**One trust boundary.** The Anthropic key only exists in `supabase/functions/pm-interview/index.ts`. The browser holds only the Supabase anon key. Adding an explicit RLS update policy (`add_sessions_update_policy.sql`) was necessary after sessions stopped persisting mid-interview — RLS denies by default, which is the right default but bites you the first time you forget.
+## Stack
+- Vanilla JS, HTML, CSS (Vite)
+- Supabase (Postgres + RLS + edge functions)
+- Claude Sonnet via the Anthropic API
+- Recharts (mounted into vanilla DOM via React roots) for the dashboard
+- Sarvam AI Saaras v3 for speech-to-text
+## Live demo
+**[pm-interview-simulator →](#)** *(https://pm-interview-simulat-xs5s.bolt.host)*
+## What I learned / what I'd do differently
+**Prompt boundaries beat prompt length.** The Generator only stopped drifting between categories when I added explicit "do not generate questions containing words like *declined, dropped, investigate*" — positive examples weren't enough. Negative rules carry more signal than longer descriptions of what good looks like.
+**Pacing is a product problem, not a prompt problem.** I spent a long time tweaking interviewer wording before realizing the issue was that I hadn't modeled the *arc* of a real interview at all. The fix wasn't better language — it was naming the warm-up phase, the four signal dimensions the interviewer is gathering, and the wrap-up condition explicitly. Once those concepts existed in the prompt, the tone fixed itself.
+**A flat rubric is worse than no rubric.** My first evaluator used a single Structure rubric and a fixed dimension weighting. It produced confidently wrong scores — penalizing correct Product Sense sequencing as disorganized, giving high overall scores to candidates who never took a position. Category-specific rubrics plus failure conditions were the only thing that made the scores feel earned.
+**I shouldn't have used JSONB for `conversation_history`.** Storing the running transcript as a JSONB column on `sessions` made early development fast but means I can't query or index individual turns, can't compute analytics like "average turn length per category" without parsing in app code, and have no referential integrity between turns and the session. The original schema actually had an `exchanges` table for exactly this — I removed it to simplify and regretted it. If I rebuilt this I'd keep `exchanges` and treat `conversation_history` on `sessions` as denormalized cache at most.
+**The migration history is messier than it should be.** There are multiple `create_pm_interview_tables.sql` files with different timestamps because I recreated the schema a couple of times during early development instead of writing forward migrations. It works because every statement is `IF NOT EXISTS`, but it's not something I'd ship to a team. Lesson: even on a solo project, treat migrations as append-only from day one.
+**Recent-question dedup is a string match and that's not enough.** `generateQuestion` filters out the last few exact-string questions, but the Generator can produce semantically identical questions worded differently across sessions. Real fix is an embedding-based dedup against the user's history, which is on the roadmap but not built yet.
+**React-in-vanilla-JS for one chart library was the wrong call.** I pulled in React and React DOM solely so I could use Recharts in `dashboard.js`. That's a lot of bundle for four charts. If I were starting over I'd use a vanilla charting library (uPlot, Chart.js) and drop React entirely.
+**The wrap-up detection is a literal string match.** `main.js` checks for the exact sentence `"Thank you, that's all I have for you today"`. It works because the prompt is forceful about the exact phrasing, but it's brittle — one model update that paraphrases will silently break auto-evaluation. A structured signal (a tool call, a JSON wrapper) would be safer.
 ## Roadmap
-
-- [ ] Research library integration — context-aware interviews grounded in my 
-      own company deep dives (pairs with PM Research Toolkit)
-- [ ] Semantic question deduplication — current string-match allows same-domain 
-      questions to slip through across sessions
-- [ ] Score trend dashboard improvements
-- [ ] Mobile optimization
+- [ ] Embedding-based question dedup across sessions
+- [ ] Move `conversation_history` back into a proper `exchanges` table
+- [ ] Replace literal-string wrap-up detection with a structured signal
+- [ ] Drop React in favor of a vanilla charting library
