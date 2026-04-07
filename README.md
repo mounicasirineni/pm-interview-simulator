@@ -1,6 +1,6 @@
 # PM Interview Simulator
 > A conversational interview simulator that runs a real PM interview loop — generate, probe, evaluate, coach — against a category-aware rubric.
-> **[Live demo →](#)** *(https://pm-interview-simulat-xs5s.bolt.host)*
+> **[Live demo →](https://pm-interview-simulat-xs5s.bolt.host)**
 
 ## What it is
 A four-agent system that runs the full arc of a PM interview: it picks a question in one of seven categories, conducts a multi-turn back-and-forth that pushes back on weak answers, evaluates the transcript against a rubric calibrated to that specific category, and then coaches you on the gaps the evaluator actually found. Built as a single-page vanilla JS app with Supabase for persistence and a Supabase edge function as the only component holding the Anthropic API key. Every behavior in this README is grounded in a specific file in the repo — I built and tuned all four agent prompts, the evaluation rubric, and the persistence and dashboard layers myself.
