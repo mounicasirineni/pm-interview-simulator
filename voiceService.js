@@ -29,10 +29,13 @@ async function startRecording() {
 
 function stopRecording(onTranscript) {
   mediaRecorder.onstop = async () => {
-    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-    const transcript = await transcribeWithSarvam(audioBlob);
-    if (transcript) onTranscript(transcript);
-  };
+  console.log('onstop fired, chunks:', audioChunks.length);
+  const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+  console.log('blob size:', audioBlob.size);
+  const transcript = await transcribeWithSarvam(audioBlob);
+  console.log('transcript from Sarvam:', transcript);
+  if (transcript) onTranscript(transcript);
+};
 
   mediaRecorder.stop();
   mediaRecorder.stream.getTracks().forEach(track => track.stop());
@@ -54,5 +57,6 @@ async function transcribeWithSarvam(audioBlob) {
   });
 
   const data = await response.json();
+  console.log('Sarvam raw response:', data);
   return data.transcript || null;
 }
