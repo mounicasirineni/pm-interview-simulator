@@ -28,17 +28,17 @@ async function startRecording() {
 }
 
 function stopRecording(onTranscript) {
-  mediaRecorder.stop();
-  mediaRecorder.stream.getTracks().forEach(track => track.stop());
-  isRecording = false;
-  document.getElementById('recording-indicator').style.display = 'none';
-  document.getElementById('mic-btn').classList.remove('recording');
-
   mediaRecorder.onstop = async () => {
     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
     const transcript = await transcribeWithSarvam(audioBlob);
     if (transcript) onTranscript(transcript);
   };
+
+  mediaRecorder.stop();
+  mediaRecorder.stream.getTracks().forEach(track => track.stop());
+  isRecording = false;
+  document.getElementById('recording-indicator').style.display = 'none';
+  document.getElementById('mic-btn').classList.remove('recording');
 }
 
 async function transcribeWithSarvam(audioBlob) {
