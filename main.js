@@ -94,10 +94,16 @@ function init() {
   });
 
   document.getElementById('mic-btn').addEventListener('click', () => {
-    toggleRecording((transcript) => {
-      sendMessage(transcript);
-    });
-  });
+  if (!state.sessionId || state.isEvaluated) return;
+
+  const wasRecording = toggleRecording(
+    null, // no onTranscript — we handle it on stop
+    (liveText) => {
+      // Show live transcript in textarea as you speak
+      elements.messageInput.value = liveText;
+    }
+  );
+});
 
   setupNavigation((tab) => {
     if (tab === 'practice') {
