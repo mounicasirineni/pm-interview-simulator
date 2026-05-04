@@ -257,8 +257,10 @@ async function sendMessage(transcript = null) {
       return;
     }
 
-    if (exchangeCount >= 12) {
-      elements.evaluateButton.disabled = false;
+    if (exchangeCount >= 10) {
+    elements.evaluateButton.disabled = false;
+    elements.inputContainer.classList.add('hidden');
+    return;
     }
   } catch (error) {
     console.error('Error getting interviewer response:', error);
