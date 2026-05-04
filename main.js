@@ -271,9 +271,12 @@ async function sendMessage(transcript = null) {
 
     if (exchangeCount >= 10) {
     elements.evaluateButton.disabled = false;
-    elements.inputContainer.classList.add('hidden');
+    state.isWaitingForResponse = false;
+    elements.sendButton.disabled = false;
+    elements.messageInput.disabled = false;
+    await evaluateSession();
     return;
-    }
+  }
   } catch (error) {
     console.error('Error getting interviewer response:', error);
     hideTypingIndicator();
