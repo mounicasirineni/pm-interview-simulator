@@ -5,7 +5,7 @@ import {
 } from './supabase.js';
 import { fetchQuestionExamples } from './researchService.js';
 import { setupNavigation, loadDashboard } from './dashboard.js';
-import { toggleRecording } from './voiceService.js';
+import { toggleRecording, getIsRecording } from './voiceService.js';
 import { generateQuestion, getInterviewerResponse, evaluateInterview, generateCoachFeedback } from './api.js';
 
 const state = {
