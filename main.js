@@ -94,10 +94,22 @@ function init() {
   });
 
   document.getElementById('mic-btn').addEventListener('click', () => {
-    toggleRecording((transcript) => {
-      sendMessage(transcript);
-    });
-  });
+  if (!state.sessionId || state.isEvaluated) return;
+
+  if (getIsRecording()) {
+    // stopping — grab whatever is in the textarea (already accumulated)
+    toggleRecording(null, null);
+    // textarea already has the text, user can edit and hit Send
+    elements.messageInput.focus();
+  } else {
+    toggleRecording(
+      null,
+      (liveText) => {
+        elements.messageInput.value = liveText;
+      }
+    );
+  }
+});
 
   setupNavigation((tab) => {
     if (tab === 'practice') {
