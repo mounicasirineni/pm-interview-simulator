@@ -5,7 +5,7 @@ import {
 } from './supabase.js';
 import { fetchQuestionExamples } from './researchService.js';
 import { setupNavigation, loadDashboard } from './dashboard.js';
-import { toggleRecording, getIsRecording } from './voiceService.js';
+import { toggleRecording } from './voiceService.js';
 import { generateQuestion, getInterviewerResponse, evaluateInterview, generateCoachFeedback } from './api.js';
 
 const state = {
@@ -94,16 +94,10 @@ function init() {
   });
 
   document.getElementById('mic-btn').addEventListener('click', () => {
-  if (!state.sessionId || state.isEvaluated) return;
-
-  const wasRecording = toggleRecording(
-    null, // no onTranscript — we handle it on stop
-    (liveText) => {
-      // Show live transcript in textarea as you speak
-      elements.messageInput.value = liveText;
-    }
-  );
-});
+    toggleRecording((transcript) => {
+      sendMessage(transcript);
+    });
+  });
 
   setupNavigation((tab) => {
     if (tab === 'practice') {

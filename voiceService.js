@@ -1,68 +1,62 @@
-let recognition = null;
+const SARVAM_API_KEY = import.meta.env.VITE_SARVAM_API_KEY;
+
+let mediaRecorder = null;
+let audioChunks = [];
 let isRecording = false;
-let accumulatedTranscript = '';
 
 export function getIsRecording() {
   return isRecording;
 }
 
-export function toggleRecording(onTranscript, onInterim) {
+export async function toggleRecording(onTranscript) {
   if (isRecording) {
-    stopRecording();
+    stopRecording(onTranscript);
   } else {
-    startRecording(onTranscript, onInterim);
+    await startRecording();
   }
 }
 
-function startRecording(onTranscript, onInterim) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    alert('Speech recognition not supported. Please use Chrome.');
-    return;
-  }
-
-  accumulatedTranscript = '';
-  recognition = new SpeechRecognition();
-  recognition.lang = 'en-IN';
-  recognition.continuous = true;
-  recognition.interimResults = true;
-
-  recognition.onresult = (event) => {
-    let interim = '';
-    for (let i = event.resultIndex; i < event.results.length; i++) {
-      const text = event.results[i][0].transcript;
-      if (event.results[i].isFinal) {
-        accumulatedTranscript += text + ' ';
-      } else {
-        interim = text;
-      }
-    }
-    // Show accumulated final + current interim in textarea
-    if (onInterim) onInterim(accumulatedTranscript + interim);
-  };
-
-  recognition.onerror = (event) => {
-    console.error('Speech recognition error:', event.error);
-    stopRecording();
-  };
-
-  recognition.onend = () => {
-    if (isRecording) recognition.start(); // keep alive mid-speech
-  };
-
-  recognition.start();
+async function startRecording() {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  audioChunks = [];
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+  mediaRecorder.start();
   isRecording = true;
   document.getElementById('recording-indicator').style.display = 'inline';
   document.getElementById('mic-btn').classList.add('recording');
 }
 
-function stopRecording() {
-  if (recognition) {
-    recognition.onend = null;
-    recognition.stop();
-    recognition = null;
-  }
+function stopRecording(onTranscript) {
+  mediaRecorder.onstop = async () => {
+  console.log('onstop fired, chunks:', audioChunks.length);
+  const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+  console.log('blob size:', audioBlob.size);
+  const transcript = await transcribeWithSarvam(audioBlob);
+  console.log('transcript from Sarvam:', transcript);
+  if (transcript) onTranscript(transcript);
+};
+
+  mediaRecorder.stop();
+  mediaRecorder.stream.getTracks().forEach(track => track.stop());
   isRecording = false;
   document.getElementById('recording-indicator').style.display = 'none';
   document.getElementById('mic-btn').classList.remove('recording');
+}
+
+async function transcribeWithSarvam(audioBlob) {
+  const formData = new FormData();
+  formData.append('file', audioBlob, 'recording.webm');
+  formData.append('model', 'saaras:v3');
+  formData.append('language_code', 'en-IN');
+
+  const response = await fetch('https://api.sarvam.ai/speech-to-text', {
+    method: 'POST',
+    headers: { 'api-subscription-key': SARVAM_API_KEY },
+    body: formData
+  });
+
+  const data = await response.json();
+  console.log('Sarvam raw response:', data);
+  return data.transcript || null;
 }
