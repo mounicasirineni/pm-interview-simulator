@@ -269,7 +269,7 @@ async function sendMessage(transcript = null) {
       return;
     }
 
-    if (exchangeCount >= 10) {
+    if (exchangeCount >= 12) {
     elements.evaluateButton.disabled = false;
     state.isWaitingForResponse = false;
     elements.sendButton.disabled = false;
