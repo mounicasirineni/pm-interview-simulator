@@ -40,6 +40,10 @@ export async function generateQuestion(questionType, examples = null, recentQues
     ? `\n\nDo NOT generate a question similar to these recently asked questions:\n${recentQuestions.map(q => `- ${q}`).join('\n')}`
     : '';
 
+  const recentThemeBlock = recentQuestions.length
+  ? `\n\nThe recent questions were in these scenario themes: ${recentQuestions.map(q => `- ${q}`).join('\n')}\n\nDo NOT generate a question in the same scenario theme (e.g., if recent questions were about app outages or delivery failures, generate something different like a delayed launch, stakeholder conflict, A/B test failure, or scope creep).`
+  : '';
+
   const systemPrompt = `You are a senior PM interviewer at a top tech company. You specialize exclusively in product management interviews — not software engineering, not data science, not design.
 
 Generate a single, specific, challenging interview question for the category: ${questionType}
