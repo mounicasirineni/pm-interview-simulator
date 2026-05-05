@@ -70,7 +70,7 @@ Rules:
 - Stay strictly within the category boundaries above
 - The question must be answerable by a PM without writing code or doing math beyond estimation`;
 
-  return callClaude(systemPrompt, `Generate an interview question. ${exampleBlock}${recentBlock}`);
+  return callClaude(systemPrompt, `Generate an interview question. ${exampleBlock}${recentBlock}${recentThemeBlock}`);
 }
 
 function formatConversationHistory(conversationHistory) {
