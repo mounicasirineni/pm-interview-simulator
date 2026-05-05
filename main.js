@@ -269,14 +269,19 @@ async function sendMessage(transcript = null) {
       return;
     }
 
-    if (exchangeCount >= 12) {
-    elements.evaluateButton.disabled = false;
-    state.isWaitingForResponse = false;
-    elements.sendButton.disabled = false;
-    elements.messageInput.disabled = false;
-    await evaluateSession();
-    return;
-  }
+ if (exchangeCount >= 12) {
+  const wrapUpMessage = "Thank you, that's all I have for you today.";
+  state.conversationHistory.push({ role: 'interviewer', message: wrapUpMessage });
+  addMessageToThread('interviewer', wrapUpMessage);
+  await updateConversationHistory(state.sessionId, state.conversationHistory);
+  
+  elements.evaluateButton.disabled = false;
+  state.isWaitingForResponse = false;
+  elements.sendButton.disabled = false;
+  elements.messageInput.disabled = false;
+  await evaluateSession();
+  return;
+}
   } catch (error) {
     console.error('Error getting interviewer response:', error);
     hideTypingIndicator();
