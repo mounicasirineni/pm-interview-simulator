@@ -94,7 +94,8 @@ function init() {
   });
 
   document.getElementById('mic-btn').addEventListener('click', () => {
-  if (!state.sessionId || state.isEvaluated) return;
+    console.log('[mic] clicked, sessionId:', state.sessionId, 'isEvaluated:', state.isEvaluated);  // ADD THIS
+    if (!state.sessionId || state.isEvaluated) return;
 
   if (getIsRecording()) {
     // stopping — grab whatever is in the textarea (already accumulated)
