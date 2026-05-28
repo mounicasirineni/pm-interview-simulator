@@ -42,8 +42,9 @@ function startRecording(onTranscript, onInterim) {
   };
 
   recognition.onerror = (event) => {
-    console.error('Speech recognition error:', event.error);
-    stopRecording();
+  console.error('Speech recognition error:', event.error);
+  if (event.error === 'no-speech') return; // non-fatal, ignore
+  stopRecording();
   };
 
   recognition.onend = () => {
