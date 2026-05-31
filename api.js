@@ -24,7 +24,7 @@ async function callClaude(systemPrompt, userMessage, maxTokens = 1000) {
   return data.text;
 }
 
-export async function generateQuestion(questionType, examples = null, recentQuestions = []) {
+export async function generateQuestion(questionType, examples = null, recentQuestions = [], companyMode = null) {
   if (examples?.length && Math.random() < 0.3) {
     const eligible = examples.filter(e => !recentQuestions.includes(e.question));
     const pool = eligible.length ? eligible : examples;
@@ -41,28 +41,50 @@ export async function generateQuestion(questionType, examples = null, recentQues
     : '';
 
   const recentThemeBlock = recentQuestions.length
-  ? `\n\nAvoid generating a question in the same scenario theme as these recent questions:\n${recentQuestions.map(q => `- ${q}`).join('\n')}\n\nInfer the theme from each question above and generate something thematically different.`
-  : '';
+    ? `\n\nAvoid generating a question in the same scenario theme as these recent questions:\n${recentQuestions.map(q => `- ${q}`).join('\n')}\n\nInfer the theme from each question above and generate something thematically different.`
+    : '';
+
+  const googleOverlay = companyMode === 'google' ? `
+
+GOOGLE L6 ROUND 1 — PROBLEM SPACE + PRODUCT VISION:
+You are generating a question for a Google Senior Product Manager (L6) Round 1 interview. This round tests two things:
+1. Can the candidate define the RIGHT problem before jumping to solutions?
+2. Does the candidate have a crisp, defensible product vision that survives scrutiny?
+
+The question MUST:
+- Be rooted in a real Google product or adjacent space: Search, Maps, YouTube, Workspace (Docs/Meet/Gmail), Android, Google Pay, Chrome, Google Health, Google Shopping, Waymo, or Google Cloud developer tools
+- Require the candidate to diagnose a user problem or product gap — not just propose features
+- Have no single correct answer — multiple defensible positions must exist
+- Be specific enough to force real trade-offs
+
+Strong Google L6 Round 1 question patterns:
+- "Google [product] serves [segment] but [observed tension or gap]. How would you think about this?"
+- "How would you improve [Google product] for [specific underserved user segment]?"
+- "What is the most important problem [Google product] should solve in the next 3 years, and why?"
+- "If you were the PM for [Google product], what would your product vision be and why?"
+- "Google is considering expanding [product] into [adjacent space]. How would you evaluate whether and how to do this?"
+
+Avoid: generic "improve Google" questions with no specific product, questions with obvious answers, pure analytics or strategy questions (those are different rounds).` : '';
 
   const systemPrompt = `You are a senior PM interviewer at a top tech company. You specialize exclusively in product management interviews — not software engineering, not data science, not design.
 
-Generate a single, specific, challenging interview question for the category: ${questionType}
+Generate a single, specific, challenging interview question for the category: ${questionType}${googleOverlay}
 
 Category definitions and boundaries:
 
 PRODUCT_SENSE: Questions about designing, improving, or imagining products and features. Examples: "How would you improve X?", "Design a product for Y user", "How would you enhance X feature?". NOT about metrics, data analysis, or diagnosing drops. If the question contains words like declined, dropped, down, investigate, diagnose, or noticed that — it does not belong in Product Sense, do not generate it.
 
-STRATEGY: Questions about business decisions, market entry, growth, and competitive response. Examples: "Should Company X enter Market Y?", "How would you grow X 10x?", "A competitor just launched Y — how do you respond?". NOT about feature design or metrics.
+STRATEGY: Questions about business decisions, market entry, growth, and competitive response. NOT about feature design or metrics.
 
-ANALYTICAL: Questions about metrics, measurement, diagnosing drops, and data-driven decisions. Examples: "Metric X dropped — how do you investigate?", "How would you measure success of X?", "Set goals for X product". NOT about product design or business strategy.
+ANALYTICAL: Questions about metrics, measurement, diagnosing drops, and data-driven decisions. NOT about product design or business strategy.
 
-EXECUTION: Questions about diagnosing and responding to live product problems, shipping under constraints, and handling real PM situations. Examples: "Metric X dropped — what do you do?", "You're 2 weeks from launch and X happens", "DAU is down, how do you investigate and respond?". NOT about pure metric definition or goal-setting (that's Analytical). NOT about long-term strategy.
+EXECUTION: Questions about diagnosing and responding to live product problems, shipping under constraints, and handling real PM situations. NOT about pure metric definition or long-term strategy.
 
-TECHNICAL_DEPTH: Questions testing PM-level technical understanding without coding. Examples: "How does X technology work and what are the PM implications?", "How would you explain X constraint to a non-technical stakeholder?". NEVER ask candidates to write code or algorithms.
+TECHNICAL_DEPTH: Questions testing PM-level technical understanding without coding. NEVER ask candidates to write code.
 
-ESTIMATION: Questions requiring structured numerical reasoning in a product context. Examples: "Estimate the market size of X", "How many users does X feature have?". Always ground in a real product or business context. NEVER pure math puzzles.
+ESTIMATION: Questions requiring structured numerical reasoning in a product context. NEVER pure math puzzles.
 
-BEHAVIORAL: Questions rooted in past experience. Examples: "Tell me about a time you...", "Describe a situation where...". ALWAYS past tense, real experience. NEVER hypothetical product or strategy questions.
+BEHAVIORAL: Questions rooted in past experience. ALWAYS past tense. NEVER hypothetical product or strategy questions.
 
 Rules:
 - Return only the question, nothing else
