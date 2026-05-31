@@ -253,7 +253,13 @@ export async function evaluateInterview(initialQuestion, conversationHistory, qu
 - 1-3: No structure, meandered through a story without clear action or result
 - 4-6: Partial STAR — situation too long, or action described at team level without personal contribution, or result missing
 - 7-8: Clean STAR: brief situation (2 sentences max), first-person action with specific personal contribution, quantified result, genuine reflection on what they'd do differently
-- 9-10: Same as 7-8, plus the reflection revealed real learning, not a packaged humble-brag`
+- 9-10: Same as 7-8, plus the reflection revealed real learning, not a packaged humble-brag`,
+
+    google_product_sense: `STRUCTURE — for Google L6 Round 1, evaluate whether the candidate followed this sequence:
+- 1-3: Jumped straight to features or solutions without establishing the problem space; no user definition; vision (if stated) was generic or feature-level
+- 4-6: Established some problem context but problem and vision phases were blurred — e.g., moved to feature design before committing to a problem, or stated a vision without connecting it to the problem defined
+- 7-8: Followed the correct Google Round 1 arc: problem space definition (named user, named pain, named why-now) → prioritized problem with explicit rationale → product vision specific enough to survive pushback → trade-offs named explicitly. Transitions between phases were deliberate.
+- 9-10: Same as 7-8, plus problem space directly motivated the vision — the vision was not a pre-formed opinion but an answer to the problem defined. Trade-offs were derived from the vision, not listed generically.`,
   };
 
   const structureRubric = structureRubrics[questionType] || `STRUCTURE (how organized and logical was the response?)
@@ -327,6 +333,7 @@ ${
     technical_depth: 'Technical Depth: Weight Specificity most heavily, then Opinion Clarity, then Depth Under Pressure, then Structure. PM-level technical accuracy and product implications are the primary signal.',
     estimation: 'Estimation: Weight Specificity most heavily, then Structure, then Depth Under Pressure, then Opinion Clarity. Numbers must be grounded — an unanchored estimate with no assumptions stated fails this category.',
     behavioral: 'Behavioral: Weight Specificity most heavily, then Depth Under Pressure, then Opinion Clarity, then Structure. Personal contribution and quantified results are the primary signal — team-level answers fail this category.',
+    google_product_sense: 'Google L6 Round 1: Weight Opinion Clarity most heavily — a candidate who cannot commit to a problem or defend a vision fails this round regardless of structure. Then weight Vision Specificity (scored as Specificity), then Problem Space Depth (scored as Structure), then Depth Under Pressure. A candidate who defines a generic vision or cannot defend their trade-offs against pushback does not pass.',
   }[questionType] || 'General: Weight Depth Under Pressure most heavily, then Specificity, then Structure, then Opinion Clarity.'
 }
 
