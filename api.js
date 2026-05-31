@@ -33,7 +33,7 @@ export async function generateQuestion(questionType, examples = null, recentQues
   }
 
   const exampleBlock = examples?.length
-    ? `Here are some example questions in this category for reference:\n${examples.map(e => `- ${e.question}`).join('\n')}\n\nGenerate a new question in the same spirit but different from these. Match their length and brevity exactly — do not add qualifiers, user segments, or context that the examples omit.`
+    ? `Here are some example questions in this category for reference:\n${examples.map(e => `- ${e.question}`).join('\n')}\n\nGenerate a new question in the same spirit but different from these. Match their length and format exactly — one sentence, no problem explanation, no multi-sentence context.`
     : '';
 
   const recentBlock = recentQuestions.length
