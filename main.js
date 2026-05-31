@@ -257,7 +257,7 @@ async function sendMessage(transcript = null) {
   showTypingIndicator();
 
   try {
-    const response = await getInterviewerResponse(state.initialQuestion, state.conversationHistory);
+    const response = await getInterviewerResponse(state.initialQuestion, state.conversationHistory, state.selectedType, state.companyMode);
 
     hideTypingIndicator();
 
