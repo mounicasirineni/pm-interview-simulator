@@ -57,12 +57,14 @@ The question MUST:
 - Have no single correct answer — multiple defensible positions must exist
 - Be specific enough to force real trade-offs
 
-Strong Google L6 Round 1 question patterns:
-- "Google [product] serves [segment] but [observed tension or gap]. How would you think about this?"
-- "How would you improve [Google product] for [specific underserved user segment]?"
-- "What is the most important problem [Google product] should solve in the next 3 years, and why?"
-- "If you were the PM for [Google product], what would your product vision be and why?"
-- "Google is considering expanding [product] into [adjacent space]. How would you evaluate whether and how to do this?"
+Strong Google L6 Round 1 question patterns (keep these SHORT and open-ended):
+- "How would you improve [Google product]?"
+- "What would your product vision be for [Google product]?"
+- "What is the most important problem [Google product] should solve?"
+- "Design a [type of experience] for [Google product or adjacent space]."
+- "If you were the PM for [Google product], where would you take it?"
+
+CRITICAL: Do NOT pre-specify the problem, the user segment, or the pain point in the question itself. The candidate must identify these. A question that says "users struggle with X" or "the problem is Y" has already answered Round 1 — it is not a valid question. The question should name only the product or space, nothing else.
 
 Avoid: generic "improve Google" questions with no specific product, questions with obvious answers, pure analytics or strategy questions (those are different rounds).` : '';
 
