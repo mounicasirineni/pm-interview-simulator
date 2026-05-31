@@ -57,16 +57,17 @@ The question MUST:
 - Have no single correct answer — multiple defensible positions must exist
 - Be specific enough to force real trade-offs
 
-Strong Google L6 Round 1 question patterns (keep these SHORT and open-ended):
+Strong Google L6 Round 1 question patterns:
 - "How would you improve [Google product]?"
+- "How would you improve [Google product] for [context or constraint]?"
 - "What would your product vision be for [Google product]?"
 - "What is the most important problem [Google product] should solve?"
-- "Design a [type of experience] for [Google product or adjacent space]."
+- "Design a [type of experience] for [Google product, adjacent space, or physical object]."
 - "If you were the PM for [Google product], where would you take it?"
 
-CRITICAL: Do NOT pre-specify the problem, the user segment, or the pain point in the question itself. The candidate must identify these. A question that says "users struggle with X" or "the problem is Y" has already answered Round 1 — it is not a valid question. The question should name only the product or space, nothing else.
+CRITICAL: The question must NOT explain the problem, diagnose a gap, or describe user struggles. A question that says "users struggle with X" or "the problem is Y" or contains multiple sentences of context has pre-answered Round 1 — it is invalid. A context qualifier like "for remote teams" or "for an astronaut" is fine. A problem explanation like "many users still struggle with indoor navigation in large venues like airports, malls, and hospitals" is not. Keep it to one sentence.
 
-Avoid: generic "improve Google" questions with no specific product, questions with obvious answers, pure analytics or strategy questions (those are different rounds).` : '';
+Avoid: multi-sentence questions, questions that describe a problem before asking about it, pure analytics or strategy questions (those are different rounds).` : '';
 
   const systemPrompt = `You are a senior PM interviewer at a top tech company. You specialize exclusively in product management interviews — not software engineering, not data science, not design.
 
