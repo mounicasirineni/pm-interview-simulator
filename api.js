@@ -450,7 +450,7 @@ Your coaching must be directly anchored to these findings. Do not spend time pra
 
     google_product_sense: `GOOGLE L6 ROUND 1 — what a passing answer looks like:
 - Problem space: names a specific user segment with a precise, observable pain point — not "users want X" but "users who do Y today experience Z friction because..."
-- Why Google: explains why this is Google's problem to solve, not a startup's — connects to Google's scale, data advantage, or distribution
+- Why this builder: explains why this company or context is the right one to solve this — what unique advantage (scale, data, distribution, access) makes this theirs to own rather than a startup's or a competitor's
 - Vision statement: one crisp sentence describing the future state for a named user, with a named mechanism. Not "make Search smarter" but "help [segment] accomplish [outcome] without [current friction], by [mechanism]"
 - Vision survivability: the vision holds up when the interviewer asks "why not just [obvious alternative]?" — candidate has a specific answer, not a generic differentiator
 - Trade-offs: names what the vision explicitly de-prioritizes and why — not hedging, a committed call
