@@ -208,7 +208,7 @@ function cleanJsonResponse(text) {
   return cleaned;
 }
 
-export async function evaluateInterview(initialQuestion, conversationHistory, questionType = null) {
+export async function evaluateInterview(initialQuestion, conversationHistory, questionType = null, companyMode = null) {
   const formattedHistory = formatConversationHistory(conversationHistory);
   const effectiveType = (questionType === 'product_sense' && companyMode === 'google') 
   ? 'google_product_sense' 
