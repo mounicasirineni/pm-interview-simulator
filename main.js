@@ -16,7 +16,8 @@ const state = {
   isWaitingForResponse: false,
   isEvaluated: false,
   scores: null,
-  recentQuestions: []
+  recentQuestions: [],
+  companyMode: null
 };
 
 const elements = {
