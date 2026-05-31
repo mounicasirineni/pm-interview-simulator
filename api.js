@@ -58,12 +58,14 @@ The question MUST:
 - Be specific enough to force real trade-offs
 
 Strong Google L6 Round 1 question patterns:
-- "How would you improve [Google product]?"
-- "How would you improve [Google product] for [context or constraint]?"
-- "What would your product vision be for [Google product]?"
-- "What is the most important problem [Google product] should solve?"
-- "Design a [type of experience] for [Google product, adjacent space, or physical object]."
-- "If you were the PM for [Google product], where would you take it?"
+- "How would you improve [product]?"
+- "How would you improve [product] for [user or context]?"
+- "What would your product vision be for [product]?"
+- "What is the most important problem [product] should solve?"
+- "Design a [type of experience or physical object] for [context or user]."
+- "If you were the PM for [product], where would you take it?"
+- "Reimagine [product or experience] for [context or constraint]."
+- "Fix [specific problem space]."
 
 CRITICAL: The question must NOT explain the problem, diagnose a gap, or describe user struggles. A question that says "users struggle with X" or "the problem is Y" or contains multiple sentences of context has pre-answered Round 1 — it is invalid. A context qualifier like "for remote teams" or "for an astronaut" is fine. A problem explanation like "many users still struggle with indoor navigation in large venues like airports, malls, and hospitals" is not. Keep it to one sentence.
 
