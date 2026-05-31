@@ -256,16 +256,16 @@ function cleanJsonResponse(text) {
 
 export async function evaluateInterview(initialQuestion, conversationHistory, questionType = null, companyMode = null) {
   const formattedHistory = formatConversationHistory(conversationHistory);
-  const effectiveType = (questionType === 'product_sense' && companyMode === 'google') 
-  ? 'google_product_sense' 
-  : questionType;
-  // Category-specific structure rubrics — what "organized" means differs by question type
+  const effectiveType = (questionType === 'product_sense' && companyMode === 'google')
+    ? 'google_product_sense'
+    : questionType;
+
   const structureRubrics = {
     product_sense: `STRUCTURE — for Product Sense, evaluate whether the candidate followed this sequence:
 - 1-3: No discernible sequence, jumped between design and metrics without grounding
 - 4-6: Partial sequence present but phases blurred — e.g., jumped to feature design before establishing user and pain point, or named pain points without tying them to a prioritized segment
 - 7-8: Followed the correct Product Sense arc: problem context → user segmentation with explicit prioritization criterion → pain points specific to prioritized segment → feature design → success metrics. Transitions between phases were explicit.
-- 9-10: Same as 7-8, plus each phase built visibly on the previous one — pain points directly motivated the feature design, metrics directly measured the feature's intended outcome. Do NOT penalize a candidate for moving through problem context → segmentation → pain points in that order — that is the correct Product Sense framework, not a structural failure.`,
+- 9-10: Same as 7-8, plus each phase built visibly on the previous one — pain points directly motivated the feature design, metrics directly measured the feature's intended outcome.`,
 
     strategy: `STRUCTURE — for Strategy, evaluate whether the candidate followed this sequence:
 - 1-3: No framework, jumped straight to recommendation without setup
@@ -303,11 +303,11 @@ export async function evaluateInterview(initialQuestion, conversationHistory, qu
 - 7-8: Clean STAR: brief situation (2 sentences max), first-person action with specific personal contribution, quantified result, genuine reflection on what they'd do differently
 - 9-10: Same as 7-8, plus the reflection revealed real learning, not a packaged humble-brag`,
 
-    google_product_sense: `STRUCTURE — for Google L6 Round 1, evaluate whether the candidate followed this sequence:
-- 1-3: Jumped straight to features or solutions without establishing the problem space; no user definition; vision (if stated) was generic or feature-level
-- 4-6: Established some problem context but problem and vision phases were blurred — e.g., moved to feature design before committing to a problem, or stated a vision without connecting it to the problem defined
-- 7-8: Followed the correct Google Round 1 arc: problem space definition (named user, named pain, named why-now) → prioritized problem with explicit rationale → product vision specific enough to survive pushback → trade-offs named explicitly. Transitions between phases were deliberate.
-- 9-10: Same as 7-8, plus problem space directly motivated the vision — the vision was not a pre-formed opinion but an answer to the problem defined. Trade-offs were derived from the vision, not listed generically.`
+    google_product_sense: `STRUCTURE — for Google L6 Round 1, evaluate whether the candidate followed this 8-section sequence:
+- 1-3: No discernible sequence — jumped to solutions without establishing user, problem, or vision; sections blurred or skipped entirely
+- 4-6: Partial sequence — covered user and problem space but skipped vision statement, or covered vision but had no MVP scope or metrics; transitions between sections were unclear
+- 7-8: Followed the correct arc: User + Current Solutions → Why This Company + Why Now → User Personas with prioritization → Pain Points with prioritization → Solutions with vision statement and platform layers → MVP Scope with falsifiable hypothesis → Success Metrics with thresholds → Risks with mitigations. Each section was distinct and transitioned explicitly.
+- 9-10: Same as 7-8, plus each section built visibly on the previous — pain points motivated the vision, vision constrained the MVP, MVP hypothesis drove the metrics, metrics informed the risks. Nothing felt disconnected or templated.`
   };
 
   const structureRubric = structureRubrics[effectiveType] || `STRUCTURE (how organized and logical was the response?)
@@ -316,12 +316,31 @@ export async function evaluateInterview(initialQuestion, conversationHistory, qu
 - 7-8: Clear logical flow, good use of framework adapted to the question
 - 9-10: Exceptionally organized, moved naturally between problem framing, analysis, and recommendation`;
 
+  const googleEvalContext = effectiveType === 'google_product_sense' ? `
+
+GOOGLE L6 ROUND 1 — EXPECTED ANSWER STRUCTURE:
+The candidate is expected to cover 8 sections in sequence. A complete answer includes:
+1. User + Current Solutions — who the user is, what they do today
+2. Why This Company + Why Now — mission fit, competitive context, risk of inaction
+3. User Personas — behaviorally distinct segments, prioritized with rationale
+4. Pain Points — themed, prioritized by intensity, root cause, and unique fit
+5. Solutions — wow experience, vision statement, platform layers, competitive advantage
+6. MVP Scope — falsifiable hypothesis, UX, build scope, tradeoffs, test plan
+7. MVP Success Metrics — outcome, feature, behavioral, guardrail metrics with thresholds
+8. Risks & Mitigations — User/Business/Technical risks with explicit tradeoffs and mitigations
+
+Do NOT penalize a candidate for covering MVP scope, metrics, or risks — these are expected sections.
+Do NOT reward a candidate for skipping to feature design early.
+Do NOT penalize a candidate for not covering sections the interviewer cut off before they could reach.
+Evaluate completeness against this 8-section arc, not against a generic product sense framework.` : '';
+
   const systemPrompt = `You are an expert PM interview coach evaluating a real interview session.
 
 Interview Question: "${initialQuestion}"
-Question Type: ${questionType || 'general'}
+Question Type: ${effectiveType || 'general'}
 Full conversation:
 ${formattedHistory}
+${googleEvalContext}
 
 Evaluate the candidate strictly and return a JSON object with exactly this structure:
 {
@@ -381,7 +400,7 @@ ${
     technical_depth: 'Technical Depth: Weight Specificity most heavily, then Opinion Clarity, then Depth Under Pressure, then Structure. PM-level technical accuracy and product implications are the primary signal.',
     estimation: 'Estimation: Weight Specificity most heavily, then Structure, then Depth Under Pressure, then Opinion Clarity. Numbers must be grounded — an unanchored estimate with no assumptions stated fails this category.',
     behavioral: 'Behavioral: Weight Specificity most heavily, then Depth Under Pressure, then Opinion Clarity, then Structure. Personal contribution and quantified results are the primary signal — team-level answers fail this category.',
-    google_product_sense: 'Google L6 Round 1: Weight Opinion Clarity most heavily — a candidate who cannot commit to a problem or defend a vision fails this round regardless of structure. Then weight Vision Specificity (scored as Specificity), then Problem Space Depth (scored as Structure), then Depth Under Pressure. A candidate who defines a generic vision or cannot defend their trade-offs against pushback does not pass.',
+    google_product_sense: 'Google L6 Round 1: Weight Opinion Clarity most heavily — a candidate who cannot commit to a problem or defend a vision fails this round regardless of structure. Then weight Structure (completeness of the 8-section arc), then Specificity, then Depth Under Pressure. A candidate who skips MVP scope, metrics, or risks has an incomplete answer regardless of how strong their vision was.',
   }[effectiveType] || 'General: Weight Depth Under Pressure most heavily, then Specificity, then Structure, then Opinion Clarity.'
 }
 
