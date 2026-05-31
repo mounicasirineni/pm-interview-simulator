@@ -374,6 +374,7 @@ export async function generateCoachFeedback(question, conversationHistory = [], 
     technical_depth: 'For Technical Depth, Specificity is the most important dimension — PM-level technical accuracy and product implications are the core signal. Lead your coaching with Specificity gaps first, then Opinion Clarity, then DUP, then Structure.',
     estimation: 'For Estimation, Specificity is the most important dimension — numbers must be grounded in assumptions. Lead your coaching with Specificity gaps first, then Structure, then DUP, then Opinion Clarity.',
     behavioral: 'For Behavioral, Specificity is the most important dimension — personal contribution and quantified results are the core signal. Lead your coaching with Specificity gaps first, then DUP, then Opinion Clarity, then Structure.',
+    google_product_sense: 'For Google L6 Round 1, Opinion Clarity is the most critical dimension — a candidate who cannot commit to a problem or defend a vision fails this round. Lead coaching with Opinion Clarity gaps first, then vision Specificity, then problem space Structure, then Depth Under Pressure.',
   };
 
   const priorityInstruction = dimensionPriority[effectiveType] || 'Lead your coaching with the weakest dimensions first, prioritizing Depth Under Pressure and Specificity.';
