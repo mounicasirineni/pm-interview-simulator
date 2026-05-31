@@ -259,7 +259,7 @@ export async function evaluateInterview(initialQuestion, conversationHistory, qu
 - 1-3: Jumped straight to features or solutions without establishing the problem space; no user definition; vision (if stated) was generic or feature-level
 - 4-6: Established some problem context but problem and vision phases were blurred — e.g., moved to feature design before committing to a problem, or stated a vision without connecting it to the problem defined
 - 7-8: Followed the correct Google Round 1 arc: problem space definition (named user, named pain, named why-now) → prioritized problem with explicit rationale → product vision specific enough to survive pushback → trade-offs named explicitly. Transitions between phases were deliberate.
-- 9-10: Same as 7-8, plus problem space directly motivated the vision — the vision was not a pre-formed opinion but an answer to the problem defined. Trade-offs were derived from the vision, not listed generically.`,
+- 9-10: Same as 7-8, plus problem space directly motivated the vision — the vision was not a pre-formed opinion but an answer to the problem defined. Trade-offs were derived from the vision, not listed generically.`
   };
 
   const structureRubric = structureRubrics[questionType] || `STRUCTURE (how organized and logical was the response?)
