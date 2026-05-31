@@ -450,7 +450,7 @@ Your coaching must be directly anchored to these findings. Do not spend time pra
 - 10-year vs 10-month: vision describes a change in user behavior or market structure, not a feature shipped next quarter`
   };
 
-  const categoryBlock = categoryGuidance[questionType] || categoryGuidance[questionType?.replace('_', '_')] || `GENERAL PM — what a 10/10 answer looks like:
+  const categoryBlock = categoryGuidance[effectiveType] || categoryGuidance[questionType?.replace('_', '_')] || `GENERAL PM — what a 10/10 answer looks like:
 - Opens with a clear problem framing that names the user, the pain, and the success criterion
 - Every claim is backed by a specific example, number, or named product — no generalities
 - Takes clear positions and defends them — no hedging, no "it depends" without resolution
