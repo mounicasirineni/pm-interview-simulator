@@ -434,7 +434,15 @@ Your coaching must be directly anchored to these findings. Do not spend time pra
 - Action section is entirely first-person — what the candidate personally did, not what the team did
 - Result is specific and quantified — not "improved the process" but "reduced review cycle from 3 weeks to 5 days"
 - Reflection is genuine — what they'd do differently and why, not a humble-brag
-- Handles the "what was your personal contribution vs. the team's" challenge with a clear, honest answer`
+- Handles the "what was your personal contribution vs. the team's" challenge with a clear, honest answer`,
+
+    google_product_sense: `GOOGLE L6 ROUND 1 — what a passing answer looks like:
+- Problem space: names a specific user segment with a precise, observable pain point — not "users want X" but "users who do Y today experience Z friction because..."
+- Why Google: explains why this is Google's problem to solve, not a startup's — connects to Google's scale, data advantage, or distribution
+- Vision statement: one crisp sentence describing the future state for a named user, with a named mechanism. Not "make Search smarter" but "help [segment] accomplish [outcome] without [current friction], by [mechanism]"
+- Vision survivability: the vision holds up when the interviewer asks "why not just [obvious alternative]?" — candidate has a specific answer, not a generic differentiator
+- Trade-offs: names what the vision explicitly de-prioritizes and why — not hedging, a committed call
+- 10-year vs 10-month: vision describes a change in user behavior or market structure, not a feature shipped next quarter`
   };
 
   const categoryBlock = categoryGuidance[questionType] || categoryGuidance[questionType?.replace('_', '_')] || `GENERAL PM — what a 10/10 answer looks like:
