@@ -507,13 +507,56 @@ Your coaching must be directly anchored to these findings. Do not spend time pra
 - Reflection is genuine — what they'd do differently and why, not a humble-brag
 - Handles the "what was your personal contribution vs. the team's" challenge with a clear, honest answer`,
 
-    google_product_sense: `GOOGLE L6 ROUND 1 — what a passing answer looks like:
-- Problem space: names a specific user segment with a precise, observable pain point — not "users want X" but "users who do Y today experience Z friction because..."
-- Why this builder: explains why this company or context is the right one to solve this — what unique advantage (scale, data, distribution, access) makes this theirs to own rather than a startup's or a competitor's
-- Vision statement: one crisp sentence describing the future state for a named user, with a named mechanism. Not "make Search smarter" but "help [segment] accomplish [outcome] without [current friction], by [mechanism]"
-- Vision survivability: the vision holds up when the interviewer asks "why not just [obvious alternative]?" — candidate has a specific answer, not a generic differentiator
-- Trade-offs: names what the vision explicitly de-prioritizes and why — not hedging, a committed call
-- 10-year vs 10-month: vision describes a change in user behavior or market structure, not a feature shipped next quarter`
+    google_product_sense: `GOOGLE L6 ROUND 1 — what a complete, passing answer looks like across all 8 sections:
+
+SECTION 1 — User + Current Solutions:
+- Names a specific user with a real behavioral pattern — not "people who use Maps" but "a frequent flyer who lands at an unfamiliar hub 3x a month"
+- Current solutions are described concretely with named workarounds and where each breaks down — not "existing tools are inadequate"
+
+SECTION 2 — Why This Company + Why Now:
+- "Why now" is anchored to a real market, technology, or behavioral shift — not a generic claim about growing demand
+- Risk of inaction is specific: names what the company loses (engagement, data, platform position) if they don't act, not just "they'll fall behind"
+- Reframe of the question narrows scope to a named user and named problem — not just a restatement of the original question
+
+SECTION 3 — User Personas:
+- Segments are behaviorally distinct and mutually exclusive — a data engineer could identify them from event logs
+- Prioritization is driven by a single most important reason, not a laundry list of criteria
+- Each segment's day-to-day priorities are stated without jumping to pain points
+
+SECTION 4 — Pain Points:
+- Pain points are grouped by theme, not listed individually — 3 themes max
+- Prioritized pain point is the structural root cause, not a symptom
+- Company's unique position to solve this pain is explicit — scale, data, distribution, or access that a startup cannot replicate
+
+SECTION 5 — Solutions:
+- Wow experience is emotionally specific — names what the user feels, not just what they can do
+- Vision statement is one crisp sentence: named segment + named behavior change + named mechanism. Not "make it easier" but "help [segment] accomplish [outcome] without [friction], by [mechanism]"
+- Platform layers (ingestion, orchestration, intelligence, interaction) each have a one-liner — no technical jargon, just what each layer does for the product
+- Competitive advantage is derived from the solution, not asserted — explains why this cannot be replicated quickly
+
+SECTION 6 — MVP Scope:
+- Hypothesis is falsifiable: "We believe [segment] will [behavior] because [assumption]"
+- MVP UX is concrete — names what the user sees, taps, or hears
+- Tradeoffs are explicit — names what is deliberately not built and why
+- Test plan is specific — names the signal that proves or disproves the hypothesis within a defined timeframe
+
+SECTION 7 — MVP Success Metrics:
+- Outcome metric measures the business or user outcome, not the feature usage
+- Feature metric measures whether the feature is working as designed
+- Behavioral metric measures whether the user did the intended action
+- Guardrail metrics protect against real failure modes, not generic ones
+- Every threshold is anchored in a baseline, benchmark, or business model calculation — never arbitrary
+
+SECTION 8 — Risks & Mitigations:
+- 2-3 risks across User, Business, and Technical buckets — not more
+- Each risk is framed as an explicit choice: "By doing X, we accept the risk of Y"
+- Each mitigation is concrete and actionable — phased rollout, guardrail metric, fallback design, or kill switch — never "we'll monitor it"
+
+WHAT SEPARATES A PASS FROM A FAIL AT L6:
+- A fail: strong vision, weak MVP — candidate cannot translate vision into a testable hypothesis
+- A fail: strong problem space, no metrics — candidate cannot define what success looks like
+- A fail: complete structure, generic specificity — every section present but nothing is concrete or named
+- A pass: each section earns the next — pain points motivate the vision, vision constrains the MVP, MVP hypothesis drives the metrics, metrics inform the risks`
   };
 
   const categoryBlock = categoryGuidance[effectiveType] || categoryGuidance[questionType?.replace('_', '_')] || `GENERAL PM — what a 10/10 answer looks like:
