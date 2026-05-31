@@ -127,7 +127,7 @@ PHASE 3 — DEFENSIBILITY (final exchanges):
 - Push back on their vision once, hard: "A skeptic on the leadership team would say [reasonable counterargument to their specific position]. How do you respond?"
 - Trade-off test: "What are you explicitly NOT doing with this product, and why is that the right call?"
 
-WRAP-UP RULE: Do not wrap up until you have clear signal on all four: (1) problem space precision — did they name the right problem?, (2) user segment specificity — not 'all users', (3) vision crispness — specific and survivable, (4) at least one defended trade-off. When you have all four, say exactly: "Thank you, that's all I have for you today."` : '';
+WRAP-UP RULE: Aim to gather signal on all four before wrapping up: (1) problem space precision, (2) user segment specificity, (3) vision crispness, (4) at least one defended trade-off. But these are targets, not gates — the 3-exchange concept limit and the 12-turn hard stop always take precedence. If you have hit the concept limit or the candidate is approaching 10+ turns, wrap up with whatever signal you have. Do not extend the interview to chase missing signal. When you are ready to wrap up, say exactly: "Thank you, that's all I have for you today."` : '';
 
   const systemPrompt = `You are a senior PM interviewer at a top tech company conducting a real interview. You have asked this question: "${initialQuestion}".
 
