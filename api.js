@@ -264,7 +264,7 @@ export async function evaluateInterview(initialQuestion, conversationHistory, qu
 - 9-10: Same as 7-8, plus problem space directly motivated the vision — the vision was not a pre-formed opinion but an answer to the problem defined. Trade-offs were derived from the vision, not listed generically.`
   };
 
-  const structureRubric = structureRubrics[questionType] || `STRUCTURE (how organized and logical was the response?)
+  const structureRubric = structureRubrics[effectiveType] || `STRUCTURE (how organized and logical was the response?)
 - 1-3: No framework, rambling, hard to follow
 - 4-6: Some structure but inconsistent, skipped steps, or framework applied rigidly without thought
 - 7-8: Clear logical flow, good use of framework adapted to the question
@@ -336,7 +336,7 @@ ${
     estimation: 'Estimation: Weight Specificity most heavily, then Structure, then Depth Under Pressure, then Opinion Clarity. Numbers must be grounded — an unanchored estimate with no assumptions stated fails this category.',
     behavioral: 'Behavioral: Weight Specificity most heavily, then Depth Under Pressure, then Opinion Clarity, then Structure. Personal contribution and quantified results are the primary signal — team-level answers fail this category.',
     google_product_sense: 'Google L6 Round 1: Weight Opinion Clarity most heavily — a candidate who cannot commit to a problem or defend a vision fails this round regardless of structure. Then weight Vision Specificity (scored as Specificity), then Problem Space Depth (scored as Structure), then Depth Under Pressure. A candidate who defines a generic vision or cannot defend their trade-offs against pushback does not pass.',
-  }[questionType] || 'General: Weight Depth Under Pressure most heavily, then Specificity, then Structure, then Opinion Clarity.'
+  }[effectiveType] || 'General: Weight Depth Under Pressure most heavily, then Specificity, then Structure, then Opinion Clarity.'
 }
 
 Be honest. A 7 should feel earned. Return only the JSON, nothing else.`;
