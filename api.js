@@ -25,7 +25,7 @@ async function callClaude(systemPrompt, userMessage, maxTokens = 1000) {
 }
 
 export async function generateQuestion(questionType, examples = null, recentQuestions = [], companyMode = null) {
-  if (examples?.length && Math.random() < 0.3) {
+  if (examples?.length && Math.random() < (companyMode === 'google' ? 0.7 : 0.3)) {
     const eligible = examples.filter(e => !recentQuestions.includes(e.question));
     const pool = eligible.length ? eligible : examples;
     const picked = pool[Math.floor(Math.random() * pool.length)];
