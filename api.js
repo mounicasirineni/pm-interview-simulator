@@ -358,7 +358,7 @@ Be honest. A 7 should feel earned. Return only the JSON, nothing else.`;
 // Renamed from generateModelAnswer. Now sequential — receives evaluator scores
 // and debrief so coaching is anchored to identified weaknesses. Also receives
 // questionType for category-specific guidance on what strong looks like.
-export async function generateCoachFeedback(question, conversationHistory = [], scores = null, questionType = null) {
+export async function generateCoachFeedback(question, conversationHistory = [], scores = null, questionType = null, companyMode = null) {
   const formattedHistory = conversationHistory.length
     ? formatConversationHistory(conversationHistory)
     : '';
