@@ -213,8 +213,8 @@ async function startSession(type) {
   elements.evaluateButton.disabled = true;
 
   try {
-    const examples = await fetchQuestionExamples(type);
-    state.initialQuestion = await generateQuestion(type, examples, state.recentQuestions);
+    const examples = await fetchQuestionExamples(type, state.companyMode);
+    state.initialQuestion = await generateQuestion(type, examples, state.recentQuestions, state.companyMode);
     state.recentQuestions = [...state.recentQuestions.slice(-4), state.initialQuestion];
     console.log('Generated question:', state.initialQuestion);
     state.sessionId = await createSession(type, state.initialQuestion);
