@@ -129,6 +129,13 @@ function selectType(btn) {
   btn.classList.add('selected');
   state.selectedType = btn.dataset.type;
   elements.startButton.disabled = false;
+
+  const googleWrapper = document.getElementById('google-mode-wrapper');
+  const googleToggle = document.getElementById('google-l6-toggle');
+  if (googleWrapper) {
+    googleWrapper.style.display = btn.dataset.type === 'product_sense' ? 'block' : 'none';
+    if (btn.dataset.type !== 'product_sense' && googleToggle) googleToggle.checked = false;
+  }
 }
 
 function createMessageElement(role, content) {
