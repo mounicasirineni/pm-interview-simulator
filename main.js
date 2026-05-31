@@ -76,7 +76,8 @@ function init() {
       state.initialQuestion,
       state.conversationHistory,
       state.scores,
-      state.selectedType
+      state.selectedType,
+      state.companyMode
     );
 
     elements.modelAnswerText.innerHTML = coaching
