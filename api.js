@@ -376,7 +376,7 @@ export async function generateCoachFeedback(question, conversationHistory = [], 
     behavioral: 'For Behavioral, Specificity is the most important dimension — personal contribution and quantified results are the core signal. Lead your coaching with Specificity gaps first, then DUP, then Opinion Clarity, then Structure.',
   };
 
-  const priorityInstruction = dimensionPriority[questionType] || 'Lead your coaching with the weakest dimensions first, prioritizing Depth Under Pressure and Specificity.';
+  const priorityInstruction = dimensionPriority[effectiveType] || 'Lead your coaching with the weakest dimensions first, prioritizing Depth Under Pressure and Specificity.';
 
   const evaluatorContext = scores
     ? `The evaluator produced these scores and debrief for this session:
