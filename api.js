@@ -362,6 +362,9 @@ export async function generateCoachFeedback(question, conversationHistory = [], 
   const formattedHistory = conversationHistory.length
     ? formatConversationHistory(conversationHistory)
     : '';
+  const effectiveType = (questionType === 'product_sense' && companyMode === 'google')
+  ? 'google_product_sense'
+  : questionType;
 
   const dimensionPriority = {
     product_sense: 'For Product Sense, Opinion Clarity is the most important dimension — a candidate who takes no clear position on user, problem, or design fails regardless of structure. Lead your coaching with Opinion Clarity gaps first, then Structure, then Specificity, then DUP.',
