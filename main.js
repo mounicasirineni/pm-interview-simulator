@@ -364,6 +364,7 @@ function resetToSetup() {
   state.isWaitingForResponse = false;
   state.isEvaluated = false;
   state.scores = null;
+  state.companyMode = null;
 
   elements.typeButtons.forEach(b => b.classList.remove('selected'));
   elements.startButton.disabled = true;
