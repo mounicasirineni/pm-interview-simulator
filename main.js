@@ -191,6 +191,9 @@ function hideTypingIndicator() {
 }
 
 async function startSession(type) {
+  const googleToggle = document.getElementById('google-l6-toggle');
+  state.companyMode = (googleToggle?.checked && type === 'product_sense') ? 'google' : null;
+
   state.sessionId = null;
   state.initialQuestion = '';
   state.conversationHistory = [];
