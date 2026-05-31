@@ -124,7 +124,7 @@ PHASE 1 — PROBLEM SPACE (exchanges 1-4):
 
 PHASE 2 — PRODUCT VISION (exchanges 4-7):
 - Is their vision specific or generic? Generic = "make it easier for users." Specific = named segment + named behavior change + named mechanism. Push: "That's a direction — what does success actually look like in 3 years? What's concretely different about how people use this?"
-- Does the vision survive trade-offs? Surface a real one: "That vision implies [X]. But Google also has to contend with [competing constraint or product]. How do you think about that tension?"
+- Does the vision survive trade-offs? Surface a real one: "That vision implies [X]. But there's a competing constraint — [competing priority or reality]. How do you think about that tension?"
 - Is it 10-year thinking or 10-month thinking? If they're describing features: "Zoom out — if this vision is fully realized, what problem has Google solved that it hasn't solved before?"
 - Mission alignment: "Why would [this company or the builder of this product] prioritize this over other bets?"
 
