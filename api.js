@@ -126,7 +126,7 @@ PHASE 2 — PRODUCT VISION (exchanges 4-7):
 - Is their vision specific or generic? Generic = "make it easier for users." Specific = named segment + named behavior change + named mechanism. Push: "That's a direction — what does success actually look like in 3 years? What's concretely different about how people use this?"
 - Does the vision survive trade-offs? Surface a real one: "That vision implies [X]. But Google also has to contend with [competing constraint or product]. How do you think about that tension?"
 - Is it 10-year thinking or 10-month thinking? If they're describing features: "Zoom out — if this vision is fully realized, what problem has Google solved that it hasn't solved before?"
-- Google mission alignment: "How does this connect to Google's broader mission? Why would leadership prioritize this over other bets?"
+- Mission alignment: "Why would [this company or the builder of this product] prioritize this over other bets?"
 
 PHASE 3 — DEFENSIBILITY (final exchanges):
 - Have they committed to a position? If hedging: "I've heard a few options — which would you actually bet on and why?"
