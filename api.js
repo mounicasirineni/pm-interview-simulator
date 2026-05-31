@@ -96,7 +96,7 @@ Rules:
 - No preamble, no label, no explanation
 - Stay strictly within the category boundaries above
 - The question must be answerable by a PM without writing code or doing math beyond estimation
-- For Google L6 mode: the question must be 15 words or fewer. If it is longer, it contains too much framing — rewrite it`;
+- For Google L6 mode: the question must be a single sentence. If it contains more than one sentence, it has too much framing — rewrite it as one sentence only`;
 
   return callClaude(systemPrompt, `Generate an interview question. ${exampleBlock}${recentBlock}${recentThemeBlock}`);
 }
