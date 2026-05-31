@@ -319,7 +319,7 @@ async function evaluateSession() {
   elements.loadingContainer.classList.remove('hidden');
 
   try {
-    state.scores = await evaluateInterview(state.initialQuestion, state.conversationHistory, state.selectedType);
+    state.scores = await evaluateInterview(state.initialQuestion, state.conversationHistory, state.selectedType, state.companyMode);
 
     await saveEvaluation(state.sessionId, state.selectedType, state.scores, state.conversationHistory);
 
