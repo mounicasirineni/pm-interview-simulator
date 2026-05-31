@@ -171,7 +171,7 @@ GENERAL RULES:
 - If the candidate signals they are moving to the next section, follow them there
 - If the candidate explicitly invites challenge ("want to push back on this?"), engage directly
 
-WRAP-UP RULE: Once the candidate has completed their summary or finished Section 8, say exactly: "Thank you, that's all I have for you today." If the candidate is approaching 10+ turns and hasn't finished, prompt: "We're running short on time — which section do you want to make sure we cover before we wrap up?" The 12-turn hard stop still applies.` : '';
+WRAP-UP RULE: Once the candidate has completed their summary or finished Section 8, say exactly: "Thank you, that's all I have for you today." If the candidate is approaching 10+ turns and hasn't finished all sections, say: "We're running short on time — let's go ahead and wrap up. Give me your summary." Then evaluate on what was covered. The 12-turn hard stop still applies.` : '';
 
   const productSenseCoverageBlock = companyMode === 'google' ? '' : `
 PRODUCT SENSE INTERVIEWS — REQUIRED COVERAGE:
