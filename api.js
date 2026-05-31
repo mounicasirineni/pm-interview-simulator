@@ -210,7 +210,9 @@ function cleanJsonResponse(text) {
 
 export async function evaluateInterview(initialQuestion, conversationHistory, questionType = null) {
   const formattedHistory = formatConversationHistory(conversationHistory);
-
+  const effectiveType = (questionType === 'product_sense' && companyMode === 'google') 
+  ? 'google_product_sense' 
+  : questionType;
   // Category-specific structure rubrics — what "organized" means differs by question type
   const structureRubrics = {
     product_sense: `STRUCTURE — for Product Sense, evaluate whether the candidate followed this sequence:
