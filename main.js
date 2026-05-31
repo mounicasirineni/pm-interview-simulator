@@ -368,6 +368,10 @@ function resetToSetup() {
 
   elements.typeButtons.forEach(b => b.classList.remove('selected'));
   elements.startButton.disabled = true;
+  const googleWrapper = document.getElementById('google-mode-wrapper');
+  const googleToggle = document.getElementById('google-l6-toggle');
+  if (googleWrapper) googleWrapper.style.display = 'none';
+  if (googleToggle) googleToggle.checked = false;
   elements.sendButton.disabled = false;
   elements.messageInput.disabled = false;
   elements.evaluateButton.disabled = false;
