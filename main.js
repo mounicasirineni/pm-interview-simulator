@@ -17,6 +17,7 @@ const state = {
   isEvaluated: false,
   scores: null,
   recentQuestions: [],
+  recentGoogleQuestions: [],
   companyMode: null
 };
 
