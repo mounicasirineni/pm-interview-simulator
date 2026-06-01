@@ -24,11 +24,14 @@ async function callClaude(systemPrompt, userMessage, maxTokens = 1000) {
   return data.text;
 }
 
-export async function generateQuestion(questionType, examples = null, recentQuestions = [], companyMode = null) {
-  if (examples?.length && Math.random() < (companyMode === 'google' ? 0.7 : 0.3)) {
-    const eligible = examples.filter(e => !recentQuestions.includes(e.question));
-    const pool = eligible.length ? eligible : examples;
-    const picked = pool[Math.floor(Math.random() * pool.length)];
+export async function generateQuestion(questionType, questionsData = null, recentQuestions = [], companyMode = null) {
+  const pool = questionsData?.pool || [];
+  const examples = questionsData?.examples || [];
+
+  if (pool.length && Math.random() < (companyMode === 'google' ? 0.7 : 0.3)) {
+    const eligible = pool.filter(e => !recentQuestions.includes(e.question));
+    const drawFrom = eligible.length ? eligible : pool;
+    const picked = drawFrom[Math.floor(Math.random() * drawFrom.length)];
     return picked.question;
   }
 
