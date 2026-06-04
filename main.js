@@ -16,8 +16,8 @@ const state = {
   isWaitingForResponse: false,
   isEvaluated: false,
   scores: null,
-  recentQuestions: [],
-  recentGoogleQuestions: [],
+  recentQuestions: JSON.parse(localStorage.getItem('recentQuestions') || '{}'),
+  recentGoogleQuestions: JSON.parse(localStorage.getItem('recentGoogleQuestions') || '[]'),
   companyMode: null
 };
 
