@@ -216,13 +216,19 @@ async function startSession(type) {
 
   try {
     const examples = await fetchQuestionExamples(type, state.companyMode);
-const activeRecentQuestions = state.companyMode === 'google' ? state.recentGoogleQuestions : state.recentQuestions;
+const activeRecentQuestions = state.companyMode === 'google'
+  ? state.recentGoogleQuestions
+  : (state.recentQuestions[type] || []);
+
 state.initialQuestion = await generateQuestion(type, examples, activeRecentQuestions, state.companyMode);
 
 if (state.companyMode === 'google') {
   state.recentGoogleQuestions = [...state.recentGoogleQuestions.slice(-8), state.initialQuestion];
+  localStorage.setItem('recentGoogleQuestions', JSON.stringify(state.recentGoogleQuestions));
 } else {
-  state.recentQuestions = [...state.recentQuestions.slice(-8), state.initialQuestion];
+  const updated = [...(state.recentQuestions[type] || []).slice(-8), state.initialQuestion];
+  state.recentQuestions = { ...state.recentQuestions, [type]: updated };
+  localStorage.setItem('recentQuestions', JSON.stringify(state.recentQuestions));
 };
     console.log('Generated question:', state.initialQuestion);
     state.sessionId = await createSession(type, state.initialQuestion);
